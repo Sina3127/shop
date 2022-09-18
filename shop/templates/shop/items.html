@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iteams:</title>
+</head>
+<body>
+    {% for r in products.all %}
+    <P> {{ r.title }} </P>
+    <a href="{% url 'itemDetails' r.id %}">more</a>
+    {% endfor %}
+</body>
+</html>

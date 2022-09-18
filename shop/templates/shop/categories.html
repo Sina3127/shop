@@ -1,0 +1,13 @@
+{% extends 'shop/_base.html' %}
+{% load static %}
+
+{% block title %}Categories{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'categories.css' %}">
+{% endblock head %}
+
+{% block content %}
+    {% for r in categories.all %}
+        <p> {{ r.title }} </p>
+    {% endfor %}
+{% endblock content %}

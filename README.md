@@ -1,0 +1,1 @@
+#this is a django project for buying cloth

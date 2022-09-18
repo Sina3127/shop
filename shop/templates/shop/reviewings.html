@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reviewing:</title>
+</head>
+<body>
+    {{ product.title }}
+    {% for r in product.review.all %}
+        <P> {{ r.user.username }} : {{ r.point }} </P>
+        <P> {{ r.text }} </P>
+        <br/>
+    {% endfor %}
+    <br/>
+    {% if form %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">
+                Sumbit your review
+            </button>
+        </form>
+    {% endif %}
+</body>
+</html>

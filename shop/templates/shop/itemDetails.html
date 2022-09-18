@@ -1,0 +1,21 @@
+{% extends 'shop/_base.html' %}
+{% load static %}
+
+{% block title %}{{ product.title }}{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'itemDetails.css' %}">
+{% endblock head %}
+
+{% block content %}
+    <img src="{{ product.cover.url }}" alt="{{ product.title }}"/>
+    <dev>
+        <h1> {{ product.title }} </h1>
+        <p> {{ product.price }} </p>
+        <p> {{ product.description }} </p>
+    </dev>
+    <form class="button" method="post" action="{% url 'addToCart' %}">
+        <input type="submit" value="add to cart">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ product.id }}">
+    </form>
+{% endblock content %}

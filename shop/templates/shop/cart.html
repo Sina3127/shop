@@ -1,0 +1,16 @@
+{% extends 'shop/_base.html' %}
+{% load static %}
+
+{% block title %}Cart{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'cart.css' %}">
+{% endblock head %}
+
+{% block content %}
+    <cart>
+        {{ cart.user.username }}
+        {% for p in cart.products.all %}
+            <P> {{ p.title }} </P>
+        {% endfor %}
+    </cart>
+{% endblock content %}
