@@ -6,6 +6,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '135.181.241.102',
+    '188.121.107.24',
     'localhost',
     'sina.com'
 ]
@@ -13,7 +14,7 @@ ALLOWED_HOSTS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_shop',
+        'NAME': 'myproject',
         'USER': os.environ.get("DATABASE_USER"),
         'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
         'HOST': 'localhost',
