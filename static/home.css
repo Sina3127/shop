@@ -1,0 +1,22 @@
+.recom {
+    background-color: #ddd;
+    font-size:30px;
+    margin: 40px;
+
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+}
+
+.recom-element {
+    margin: 15px;
+    display: grid;
+    grid-template-columns: 100%;
+    border-style: solid;
+    border-color: #393939;
+    border-radius: 10px;
+}
+
+.img {
+    width: 80px;
+    height: auto;
+}

@@ -7,15 +7,19 @@
 {% endblock head %}
 
 {% block content %}
-    <img src="{{ product.cover.url }}" alt="{{ product.title }}"/>
-    <dev>
-        <h1> {{ product.title }} </h1>
-        <p> {{ product.price }} </p>
-        <p> {{ product.description }} </p>
-    </dev>
-    <form class="button" method="post" action="{% url 'addToCart' %}">
-        <input type="submit" value="add to cart">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{ product.id }}">
-    </form>
+    <div class="container">
+        <div class="img">
+            <img src="{{ product.cover.url }}" alt="{{ product.title }}"/>
+        </div>
+        <div class="info">
+            <h1> {{ product.title }} </h1>
+            <p> {{ product.price }} </p>
+            <p> {{ product.description }} </p>
+        </div>
+        <form class="buying" method="post" action="{% url 'addToCart' %}">
+            <input type="submit" value="add to cart">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ product.id }}">
+        </form>
+    </div>
 {% endblock content %}
