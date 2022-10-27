@@ -88,8 +88,11 @@ def orderStatus(request):  # locations, arrival, itemdetails,
     return HttpResponse("orderStatus")
 
 
-def search(request):  # search word, items,
-    return HttpResponse("search")
+def searchbar(request):
+    if request.method == "GET":
+        search = request.GET.get('search')
+        post = Product.objects.filter(title__contains=search).all()
+        return render(request, 'shop/searchbar.html', {'post': post})
 
 
 def reviewings(request, id):  # itemdetails
