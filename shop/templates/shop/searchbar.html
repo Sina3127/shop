@@ -8,7 +8,14 @@
         <center><h1>Search result found</h1></center>
         <br>
         {% for i in post %}
-            <center><h2><a href="{% url 'itemDetails' id=i.id %}">{{ i.title }} : {{ i.snipet }}</a></h2></center>
+            <div class="card" style="width: 18rem;">
+              <img src="{{ i.cover.url }}" class="card-img-top" alt="img of the product">
+                <div class="card-body">
+                <h5 class="card-title">{{ i.title }}</h5>
+                <p class="card-text">{{ i.description }}</p>
+                <a href="{% url 'itemDetails' id=i.id %}" class="btn btn-primary">See Details</a>
+              </div>
+            </div>
         {% endfor %}
     {% else %}
         <center><h1>nothing found :(</h1></center>

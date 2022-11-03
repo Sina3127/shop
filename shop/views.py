@@ -1,9 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.views import generic
-
-
 # class Home(generic.TemplateView):
 #     template_name = 'shop/home.html'
 from django.views.decorators.cache import cache_page
@@ -22,30 +19,32 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'recom' : recom
+        'recom': recom
     }
     return HttpResponse(page.render(context, request))
 
 
-def itemDetails(request, id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
+def itemDetails(request,
+                id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
     product = get_object_or_404(Product, id=id)
     context = {
-        'product' : product
+        'product': product
     }
     return render(request, 'shop/itemDetails.html', context)
 
 
 def CartDetails(request):
     if request.user.is_authenticated:
-       page = loader.get_template('shop/cart.html')
-       # cart = Cart.objects.filter(user=request.user).all()
-       cart, created = Cart.objects.get_or_create(user=request.user)
-       context = {
-           'cart' : cart
-       }
-       return HttpResponse(page.render(context, request))
+        page = loader.get_template('shop/cart.html')
+        # cart = Cart.objects.filter(user=request.user).all()
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        context = {
+            'cart': cart
+        }
+        return HttpResponse(page.render(context, request))
     else:
         return redirect('signup')
+
 
 def addToCart(request):  # cart, you may also like,
     print(request.POST)
@@ -57,6 +56,7 @@ def addToCart(request):  # cart, you may also like,
         return redirect('cart')
     else:
         return redirect('signup')
+
 
 def removeFromCart(request):  # cart, you may also like,
     return HttpResponse("removeFromCart")
@@ -77,12 +77,14 @@ def items(request):  # special offers, itemDetails
     }
     return render(request, 'shop/items.html', context)
 
+
 def Categories(request):  # list of chategories
     categories = Category.objects.all()
     context = {
         'categories': categories,
     }
     return render(request, 'shop/categories.html', context)
+
 
 def orderStatus(request):  # locations, arrival, itemdetails,
     return HttpResponse("orderStatus")
@@ -110,7 +112,7 @@ def reviewings(request, id):  # itemdetails
         else:
             form = AddReview()
     context = {
-        'product' : product,
-        'form' : form,
+        'product': product,
+        'form': form,
     }
     return render(request, 'shop/reviewings.html', context)
