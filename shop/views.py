@@ -12,8 +12,8 @@ from shop.form import AddReview
 from shop.models import Product, Cart, Category, ReviewComment
 
 
-@cache_page(60 * 10)
 def Home(request):
+    categories = Category.objects.all()
     page = loader.get_template('shop/home.html')
     recom = None
     tag = request.GET.get('tag', None)
@@ -22,7 +22,8 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'recom' : recom
+        'recom' : recom,
+        'categories': categories,
     }
     return HttpResponse(page.render(context, request))
 
