@@ -13,7 +13,6 @@ from shop.models import Product, Cart, Category, ReviewComment
 
 
 def Home(request):
-    categories = Category.objects.all()
     page = loader.get_template('shop/home.html')
     recom = None
     tag = request.GET.get('tag', None)
@@ -23,7 +22,7 @@ def Home(request):
         recom = Product.objects.all()
     context = {
         'recom' : recom,
-        'categories': categories,
+        'categories':Category.objects.filter(parent__isnull=True).all(),
     }
     return HttpResponse(page.render(context, request))
 
@@ -31,7 +30,8 @@ def Home(request):
 def itemDetails(request, id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
     product = get_object_or_404(Product, id=id)
     context = {
-        'product' : product
+        'product' : product,
+        'categories': Category.objects.filter(parent__isnull=True).all(),
     }
     return render(request, 'shop/itemDetails.html', context)
 
@@ -78,12 +78,26 @@ def items(request):  # special offers, itemDetails
     }
     return render(request, 'shop/items.html', context)
 
-def Categories(request):  # list of chategories
-    categories = Category.objects.all()
+def Categories(request,id):  # list of chategories
+    category = get_object_or_404(Category, pk=id)
+    childCategories = Category.objects.filter(parent=category).all()
     context = {
-        'categories': categories,
+        'category': category,
+        'childCategories': childCategories,
     }
     return render(request, 'shop/categories.html', context)
+
+
+
+def CategoriesDetials(request,id):
+    category = get_object_or_404(Category, pk=id)
+    product = Product.objects.filter(category=category).all()
+    context = {
+        'category': category,
+        'product': product,
+    }
+    return render(request, 'shop/categories-details.html', context)
+
 
 def orderStatus(request):  # locations, arrival, itemdetails,
     return HttpResponse("orderStatus")

@@ -2,12 +2,10 @@
 {% load static %}
 
 {% block title %}Categories{% endblock title %}
-{% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'categories.css' %}">
-{% endblock head %}
-
 {% block content %}
-    {% for r in categories.all %}
-        <p> {{ r.title }} </p>
+    <a>{{ category.title }}</a>
+    <br>
+    {% for c in childCategories %}
+        <a href="{% url 'categories-details' id=c.id %}"> {{ c.title }}</a>
     {% endfor %}
 {% endblock content %}
