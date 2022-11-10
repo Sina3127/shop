@@ -11,7 +11,7 @@
     {% block head %}
     {% endblock head %}
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
@@ -73,11 +73,10 @@
     </div>
 </header>
 
-<main class="container h-75 d-inline-block">
+<main class="mb-auto container h-75 d-inline-block">
     {% block content %}
     {% endblock content %}
 </main>
-
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top bg-dark text-light">
 <div class="col-md-4 d-flex align-items-center">
