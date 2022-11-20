@@ -21,7 +21,7 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'recom' : recom,
+        'products' : recom,
         'categories':Category.objects.filter(parent__isnull=True).all(),
     }
     return HttpResponse(page.render(context, request))
@@ -96,7 +96,7 @@ def CategoriesDetials(request,id):
     product = Product.objects.filter(category=category).all()
     context = {
         'category': category,
-        'product': product,
+        'products': product,
     }
     return render(request, 'shop/categories-details.html', context)
 
@@ -109,8 +109,8 @@ def orderStatus(request):  # locations, arrival, itemdetails,
 def searchbar(request):
     if request.method == "GET":
         search = request.GET.get('search')
-        post = Product.objects.filter(title__contains=search).all()
-        return render(request, 'shop/searchbar.html', {'post': post})
+        products = Product.objects.filter(title__contains=search).all()
+        return render(request, 'shop/searchbar.html', {'products': products})
 
 
 def reviewings(request, id):  # itemdetails

@@ -5,7 +5,5 @@
 {% block content %}
     <a>{{ category.title }}</a>
     <br>
-    {% for p in product %}
-        <a href="{% url 'itemDetails' id=p.id %}"> {{ p.title }}</a>
-    {% endfor %}
+    {% include "shop/cards.html" %}
 {% endblock content %}
