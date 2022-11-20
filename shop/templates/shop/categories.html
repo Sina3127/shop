@@ -7,14 +7,12 @@
     <br>
     <div class="row g-4">
     {% for c in childCategories %}
-          <div class="col-sm-6">
-            <div class="card">
+          <div class="col col-sm-6 card">
               <div class="card-body">
                 <h5 class="card-title">{{ c.title }}</h5>
                 <p class="card-text">{{ c.description }}</p>
                 <a href="{% url 'categories-details' id=c.id %}"> see details</a>
               </div>
-            </div>
           </div>
     {% endfor %}
     </div>
