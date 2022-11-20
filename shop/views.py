@@ -21,7 +21,7 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'recom' : recom,
+        'products' : recom,
         'categories':Category.objects.filter(parent__isnull=True).all(),
     }
     return HttpResponse(page.render(context, request))
@@ -38,15 +38,16 @@ def itemDetails(request, id):  # price, title, list(pictures), copon, review, de
 
 def CartDetails(request):
     if request.user.is_authenticated:
-       page = loader.get_template('shop/cart.html')
-       # cart = Cart.objects.filter(user=request.user).all()
-       cart, created = Cart.objects.get_or_create(user=request.user)
-       context = {
-           'cart' : cart
-       }
-       return HttpResponse(page.render(context, request))
+        page = loader.get_template('shop/cart.html')
+        # cart = Cart.objects.filter(user=request.user).all()
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        context = {
+            'cart': cart
+        }
+        return HttpResponse(page.render(context, request))
     else:
         return redirect('signup')
+
 
 def addToCart(request):  # cart, you may also like,
     print(request.POST)
@@ -58,6 +59,7 @@ def addToCart(request):  # cart, you may also like,
         return redirect('cart')
     else:
         return redirect('signup')
+
 
 def removeFromCart(request):  # cart, you may also like,
     return HttpResponse("removeFromCart")
@@ -94,9 +96,10 @@ def CategoriesDetials(request,id):
     product = Product.objects.filter(category=category).all()
     context = {
         'category': category,
-        'product': product,
+        'products': product,
     }
     return render(request, 'shop/categories-details.html', context)
+
 
 
 def orderStatus(request):  # locations, arrival, itemdetails,
@@ -106,8 +109,8 @@ def orderStatus(request):  # locations, arrival, itemdetails,
 def searchbar(request):
     if request.method == "GET":
         search = request.GET.get('search')
-        post = Product.objects.filter(title__contains=search).all()
-        return render(request, 'shop/searchbar.html', {'post': post})
+        products = Product.objects.filter(title__contains=search).all()
+        return render(request, 'shop/searchbar.html', {'products': products})
 
 
 def reviewings(request, id):  # itemdetails
@@ -125,7 +128,7 @@ def reviewings(request, id):  # itemdetails
         else:
             form = AddReview()
     context = {
-        'product' : product,
-        'form' : form,
+        'product': product,
+        'form': form,
     }
     return render(request, 'shop/reviewings.html', context)

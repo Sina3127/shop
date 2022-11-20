@@ -7,13 +7,5 @@
 {% endblock head %}
 
 {% block content %}
-    <recomended class="recom">
-        {% for i in recom.all %}
-            <div class="recom-element">
-                <a href="{% url 'itemDetails' i.id %}"> <img class="img" src="{{ i.cover.url }}" alt="{{ i.title }}"/> </a>
-                <a href="{% url 'itemDetails' i.id %}"> {{ i.title }} </a>
-                <a href="{% url 'itemDetails' i.id %}"> {{ i.price }} </a>
-            </div>
-        {% endfor %}
-    </recomended>
+    {% include "shop/cards.html" %}
 {% endblock content %}

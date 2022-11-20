@@ -1,0 +1,12 @@
+<cards class="row row-cols-1 row-cols-md-3 g-4">
+    {% for i in products.all %}
+        <div class="col card">
+            <img src="{{ i.cover.url }}" class="card-img-top" alt="img of the product">
+            <div class="card-body">
+                <h5 class="card-title">{{ i.title }}</h5>
+                <p class="card-text">{{ i.description|truncatewords:8 }}</p>
+                <a href="{% url 'itemDetails' id=i.id %}" class="btn btn-primary">See Details</a>
+            </div>
+        </div>
+    {% endfor %}
+</cards>

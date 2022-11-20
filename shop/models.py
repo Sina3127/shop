@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import ForeignKey
 
 from account.models import CustomUser
-from shop.validators import point_validator
+from shop.validators import point_validator, validate_minimum_size
 
 
 class Category(models.Model):
@@ -26,7 +26,7 @@ class Product(models.Model):
         (Tag.OUT_OF_STOCK, "out of stock"),
     )
     tag = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
-    cover = models.ImageField(upload_to='uploads/')
+    cover = models.ImageField(upload_to='uploads/', validators=[validate_minimum_size(400, 600)])
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=255)
     description = models.TextField()
