@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
+from django.views import generic
+
+
 # class Home(generic.TemplateView):
 #     template_name = 'shop/home.html'
 from django.views.decorators.cache import cache_page
@@ -9,7 +12,6 @@ from shop.form import AddReview
 from shop.models import Product, Cart, Category, ReviewComment
 
 
-@cache_page(60 * 10)
 def Home(request):
     page = loader.get_template('shop/home.html')
     recom = None
@@ -19,16 +21,17 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'recom': recom
+        'recom' : recom,
+        'categories':Category.objects.filter(parent__isnull=True).all(),
     }
     return HttpResponse(page.render(context, request))
 
 
-def itemDetails(request,
-                id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
+def itemDetails(request, id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
     product = get_object_or_404(Product, id=id)
     context = {
-        'product': product
+        'product' : product,
+        'categories': Category.objects.filter(parent__isnull=True).all(),
     }
     return render(request, 'shop/itemDetails.html', context)
 
@@ -77,13 +80,26 @@ def items(request):  # special offers, itemDetails
     }
     return render(request, 'shop/items.html', context)
 
-
-def Categories(request):  # list of chategories
-    categories = Category.objects.all()
+def Categories(request,id):  # list of chategories
+    category = get_object_or_404(Category, pk=id)
+    childCategories = Category.objects.filter(parent=category).all()
     context = {
-        'categories': categories,
+        'category': category,
+        'childCategories': childCategories,
     }
     return render(request, 'shop/categories.html', context)
+
+
+
+def CategoriesDetials(request,id):
+    category = get_object_or_404(Category, pk=id)
+    product = Product.objects.filter(category=category).all()
+    context = {
+        'category': category,
+        'product': product,
+    }
+    return render(request, 'shop/categories-details.html', context)
+
 
 
 def orderStatus(request):  # locations, arrival, itemdetails,

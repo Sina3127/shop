@@ -8,6 +8,7 @@ from shop.validators import point_validator, validate_minimum_size
 
 class Category(models.Model):
     title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
     parent = models.ForeignKey("Category", on_delete=models.PROTECT, null=True, blank=True)
     # Product
     def __str__(self):
