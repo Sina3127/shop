@@ -1,0 +1,11 @@
+{% extends 'shop/_base.html' %}
+{% load static %}
+{% block title %}Categories details{% endblock title %}
+
+{% block content %}
+    <a>{{ category.title }}</a>
+    <br>
+    {% for p in product %}
+        <a href="{% url 'itemDetails' id=p.id %}"> {{ p.title }}</a>
+    {% endfor %}
+{% endblock content %}
