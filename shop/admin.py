@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.utils.html import format_html
 from unicodedata import category
 
-from shop.models import Product, Category, ReviewComment, Cart
+from shop.models import Product, Category, ReviewComment, Cart, Banner
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -23,3 +24,4 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html('<a href="{}"> details </a>', url)
 admin.site.register(ReviewComment)
 admin.site.register(Cart)
+admin.site.register(Banner)

@@ -9,7 +9,7 @@ from django.views import generic
 from django.views.decorators.cache import cache_page
 
 from shop.form import AddReview
-from shop.models import Product, Cart, Category, ReviewComment
+from shop.models import Product, Cart, Category, ReviewComment, Banner
 
 
 def Home(request):
@@ -23,6 +23,7 @@ def Home(request):
     context = {
         'products' : recom,
         'categories':Category.objects.filter(parent__isnull=True).all(),
+        'banner': Banner.objects.filter(is_active=True).order_by('number').all(),
     }
     return HttpResponse(page.render(context, request))
 
