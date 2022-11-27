@@ -41,8 +41,16 @@ def CartDetails(request):
         page = loader.get_template('shop/cart.html')
         # cart = Cart.objects.filter(user=request.user).all()
         cart, created = Cart.objects.get_or_create(user=request.user)
+
+        t_amount = 0
+
+        for p in cart.products.all():
+            amount = p.price
+            t_amount += amount
+
         context = {
-            'cart': cart
+            'cart': cart,
+            't_amount': t_amount
         }
         return HttpResponse(page.render(context, request))
     else:
