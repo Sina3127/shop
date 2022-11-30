@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import ForeignKey
 
-from account.models import CustomUser
+from account.models import CustomUser, Address
 from shop.validators import point_validator, validate_minimum_size
 
 
@@ -62,9 +62,43 @@ class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     bio = models.TextField(null=True, blank=True)
 
-
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, related_name='carts')
     def __str__(self):
         return self.user.username
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+    count = models.IntegerField()
+
+class Transaction(models.Model):
+    class STATE:
+        NEW = 1
+        PENDING = 2
+        PAYMENT_APPROVED = 3
+        ADMIN_CHECKING = 4
+        ADMIN_FAILED = 5
+        PAYMENT_FAILED = 6
+
+    TagTypeChoose = (
+        (STATE.NEW, "new"),
+        (STATE.PENDING, "pending"),
+        (STATE.PAYMENT_APPROVED, "payment approved"),
+        (STATE.ADMIN_CHECKING, "admin checking"),
+        (STATE.ADMIN_FAILED, "admin failed"),
+        (STATE.PAYMENT_FAILED, "payment failed"),
+    )
+    state_payment = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    created = models.DateTimeField(auto_now_add=True)
+    send_time = models.DateField()
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    shipping_price = models.IntegerField()
+    total_price = models.IntegerField()
+
+class TransactionItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_item")
+    count = models.IntegerField()
+    price = models.IntegerField()

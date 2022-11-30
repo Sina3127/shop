@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.core.exceptions import ValidationError
 
 
@@ -8,6 +10,7 @@ def point_validator(value):
         raise ValidationError('value must be less than or equal to 5')
 
 def validate_minimum_size(width=None, height=None):
+    @wraps(validate_minimum_size)
     def validator(image):
         error = False
         if width is not None and image.width < width:

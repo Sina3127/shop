@@ -9,7 +9,7 @@ from django.views import generic
 from django.views.decorators.cache import cache_page
 
 from shop.form import AddReview
-from shop.models import Product, Cart, Category, ReviewComment
+from shop.models import Product, Cart, Category, ReviewComment, CartItem
 
 
 def Home(request):
@@ -44,8 +44,8 @@ def CartDetails(request):
 
         t_amount = 0
 
-        for p in cart.products.all():
-            amount = p.price
+        for c in cart.cart_items.all():
+            amount = c.product.price * c.count
             t_amount += amount
 
         context = {
@@ -63,7 +63,12 @@ def addToCart(request):  # cart, you may also like,
         cart, created = Cart.objects.get_or_create(user=request.user)
         product_id = request.POST.get('id')
         id = int(product_id[0])
-        cart.products.add(id)
+        if CartItem.objects.filter(cart = cart, product = id).exists():
+            cart_item = CartItem.objects.filter(cart = cart, product = id).first()
+            cart_item.count += 1
+            cart_item.save()
+        else:
+            CartItem.objects.create(cart=cart, product_id=id, count= 1)
         return redirect('cart')
     else:
         return redirect('signup')
