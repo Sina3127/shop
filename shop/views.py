@@ -75,8 +75,21 @@ def addToCart(request):  # cart, you may also like,
         return redirect('signup')
 
 
-def removeFromCart(request):  # cart, you may also like,
-    return HttpResponse("removeFromCart")
+def removeFromCart(request):
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        product_id = request.POST.get('id')
+        id = int(product_id[0])
+        if CartItem.objects.filter(cart=cart, product=id).exists():
+            cart_item = CartItem.objects.filter(cart=cart, product=id).first()
+            cart_item.count -= 1
+            if cart_item.count < 1:
+                CartItem.objects.filter(id=cart_item.id).delete()
+            else:
+                cart_item.save()
+        return redirect('cart')
+    else:
+        return redirect('signup')
 
 
 def orderSumary(request):  # previes card,

@@ -40,11 +40,5 @@ def addLocation(request):#locations, you may also like
 def removeLocation(request):#locations, you may also like
     pass
 
-def addCard(request):#cards, you may also like
-    pass
-
-def removeCard(request):#cards, you may also like
-    pass
-
 class profile(generic.TemplateView):
     template_name = 'account/profile.html'
