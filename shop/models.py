@@ -26,7 +26,7 @@ class Product(models.Model):
         (Tag.OUT_OF_STOCK, "out of stock"),
     )
     tag = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
-    cover = models.ImageField(upload_to='uploads/', validators=[validate_minimum_size(400, 600)])
+    cover = models.ImageField(upload_to='uploads/', validators=[validate_minimum_size(400, 600),])
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -45,6 +45,13 @@ class ProductMedia(models.Model):
     product = ForeignKey(Product, on_delete=models.CASCADE)
     img = models.ImageField(upload_to='uploads/')
 
+class Banner(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    alt = models.CharField(max_length=250)
+    url = models.CharField(max_length=250)
+    is_active = models.BooleanField(default=True)
+    number = models.IntegerField()
+
 
 # class review(models.Model):
 #     product = OneToOneField(Product, on_delete=models.CASCADE)
@@ -54,7 +61,7 @@ class ReviewComment(models.Model):
     review = ForeignKey(Product, on_delete=models.CASCADE, related_name='review')
     text = models.TextField(max_length=255, blank=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    point = models.DecimalField(max_digits=5, decimal_places=2, validators=[point_validator])
+    point = models.DecimalField(max_digits=5, decimal_places=2, validators=[point_validator,])
     date = models.DateField(auto_now=True)
 
 
