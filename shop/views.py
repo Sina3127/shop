@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
+from django.utils.translation import gettext as _
 
 from shop.form import AddReview
 from shop.models import Banner
@@ -24,6 +25,7 @@ def Home(request):
         'products': recom,
         'categories': Category.objects.filter(parent__isnull=True).all(),
         'banner': Banner.objects.filter(is_active=True).order_by('number').all(),
+        'sample': _("sample")
     }
     return HttpResponse(page.render(context, request))
 
@@ -72,10 +74,10 @@ def addToCart(request):  # cart, you may also like,
             CartItem.objects.create(cart=cart, product=product, count=1)
 
         if CartItem.objects.get(cart=cart, product=id).count > product.inventory:
-            messages.add_message(request, messages.WARNING, "sorry, we don't have enough product!")
+            messages.add_message(request, messages.WARNING, _("sorry, we don't have enough product!"))
             CartItem.objects.filter(cart=cart, product=id).update(count=product.inventory)
         else:
-            messages.add_message(request, messages.INFO, "new product added")
+            messages.add_message(request, messages.INFO, _("new product added"))
         return redirect('cart')
     else:
         return redirect('signup')
