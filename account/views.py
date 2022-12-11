@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template import loader
 from django.views import generic
 from .models import Address
 
@@ -40,5 +41,11 @@ def addLocation(request):#locations, you may also like
 def removeLocation(request):#locations, you may also like
     pass
 
-class profile(generic.TemplateView):
-    template_name = 'account/profile.html'
+def profile(request):
+    if request.user.is_authenticated:
+        page = loader.get_template('account/profile.html')
+        context = {
+        }
+        return HttpResponse(page.render(context, request))
+    else:
+        return redirect('signup')
