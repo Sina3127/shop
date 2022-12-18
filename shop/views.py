@@ -1,9 +1,11 @@
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
+from django.views import generic
 
-from shop.form import AddReview
-from shop.models import Banner
+from shop.form import AddReview, AddTransaction
+from shop.models import Banner, Transaction, TransactionItem
 from shop.models import Product, Cart, Category, ReviewComment, CartItem
 
 
@@ -152,17 +154,30 @@ def reviewings(request, id):  # itemdetails
     }
     return render(request, 'shop/reviewings.html', context)
 
-def shipping(request):
-    if request.user.is_authenticated:
-        page = loader.get_template('shop/shipping.html')
-        cart, created = Cart.objects.get_or_create(user=request.user)
 
-        context = {
-            'cart': cart,
-            't_amount': cart.t_price(),
-            'address': request.user.address.all(),
-            'send_time': ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",]
-        }
-        return render(request, 'shop/shipping.html', context)
-    else:
+def shipping(request):
+    if not request.user.is_authenticated:
         return redirect('signup')
+
+    if request.method == 'POST':
+        form = AddTransaction(request.user, request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                address = form.cleaned_data.get('address')
+                send_time = form.cleaned_data.get("send_time")
+                user = request.user
+                cart = Cart.objects.get(user=request.user)
+                cart_items = CartItem.objects.filter(cart=cart).all()
+                Transaction.objects.create(user=user, state_payment=Transaction.STATE.NEW,
+                                           )
+                for cart_item in cart_items:
+                    TransactionItem.objects.create()
+
+            return redirect('payment')
+    else:
+        form = AddTransaction(request.user)
+    return render(request, 'shop/shipping.html', {'form': form})
+
+
+class PaymentView(generic.TemplateView):
+    pass

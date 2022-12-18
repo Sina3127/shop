@@ -16,4 +16,5 @@ urlpatterns = [
     path('reviewings/<int:id>/', views.reviewings, name='reviewings'),
     path('searchbar/', views.searchbar, name='searchbar'),
     path('shipping/', views.shipping, name='shipping'),
+    path('payment/', views.PaymentView.as_view(), name='payment'),
 ]

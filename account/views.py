@@ -9,8 +9,9 @@ from .models import Address
 from account.form import CustomUserCreationForm, AddressForm
 
 
-def changePassword(request):#password, you may also like, new password, confirm no password
+def changePassword(request):  # password, you may also like, new password, confirm no password
     pass
+
 
 def signup(request):
     if request.method == 'POST':
@@ -26,20 +27,21 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, "account/signup.html", {'form': form})
 
-def addLocation(request):#locations, you may also like
+
+def addLocation(request):  # locations, you may also like
     if request.method == 'POST':
-        form = AddressForm(request.POST)
+        form = AddressForm(request.user, request.POST)
         if form.is_valid():
-            address = form.cleaned_data.get('address')
-            user = request.user
-            Address.objects.create(address=address, user=user)
+            form.save()
             return redirect('profile')
     else:
-        form = AddressForm()
+        form = AddressForm(request.user)
     return render(request, "account/addLocation.html", {'form': form})
 
-def removeLocation(request):#locations, you may also like
+
+def removeLocation(request):  # locations, you may also like
     pass
+
 
 def profile(request):
     if request.user.is_authenticated:

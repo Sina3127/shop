@@ -5,6 +5,12 @@
     <title>shipping</title>
 </head>
 <body>
-
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            enter address
+        </button>
+    </form>
 </body>
 </html>

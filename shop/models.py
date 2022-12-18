@@ -101,7 +101,7 @@ class Transaction(models.Model):
     TagTypeChoose = ((STATE.NEW, "new"), (STATE.PENDING, "pending"), (STATE.PAYMENT_APPROVED, "payment approved"),
                      (STATE.ADMIN_CHECKING, "admin checking"), (STATE.ADMIN_FAILED, "admin failed"),
                      (STATE.PAYMENT_FAILED, "payment failed"),)
-    state_payment = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
+    state_payment = models.IntegerField(choices=TagTypeChoose)
     user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     send_time = models.DateField()
