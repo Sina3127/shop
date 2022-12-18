@@ -2,9 +2,7 @@
 {% load static %}
 
 {% block title %}Profile{% endblock title %}
-{% block head %}
 
-{% endblock head %}
 
 {% block content %}
  {% if user.is_authenticated %}
@@ -18,23 +16,38 @@
      <div class="row">
 
          <div class="col-md-4">
-             <img src="{{ user.avatar.image.url }}"/>
+             <img src="{{ user.avatar.image.url }}" class="rounded-circle float-start"/>
              <div>{{ user.username }}</div>
          </div>
 
          <div class="col-md-8">
              <div class="row">
-                 <div class="col">addresses:</div>
-                 {% for a in user.address.all %}
-                    <div class="col text-bg-secondary p-3 mx-2"> {{ a.address }} </div>
-                 {% endfor %}
-                 <a href="{% url 'add_location' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                 <div class="col">
+                     <div class="col my-3 py-3">addresses:</div>
+                     {% for a in user.address.all %}
+                        <div class="col text-bg-secondary p-3 my-3 py-3"> {{ a.address|truncatewords:8 }} </div>
+                     {% endfor %}
+                     <a href="{% url 'add_location' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                     <a href="{% url 'add_location' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
+                 </div>
+
+                 <div class="col">
+                     <div class="col my-3 py-3">phone numbers:</div>
+                     {% for a in user.phone_number.all %}
+                        <div class="col text-bg-secondary p-3 my-3 py-3"> {{ a.phone_number }} </div>
+                     {% endfor %}
+                     <a href="{% url 'add_phone_number' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                     <a href="{% url 'add_phone_number' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
+                 </div>
              </div>
          </div>
 
      </div>
-
  </div>
+
+<div class="container-fluid">
+    <p class="text-light bg-dark">.text-light</p>
+</div>
   {% else %}
     <p>You are not logged in</p>
     <a href="{% url 'login' %}">Log In</a>

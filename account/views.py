@@ -4,9 +4,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.views import generic
-from .models import Address
+from .models import Address, PhoneNumber
 
-from account.form import CustomUserCreationForm, AddressForm
+from account.form import CustomUserCreationForm, AddressForm, PhoneNumberForm
 
 
 def changePassword(request):#password, you may also like, new password, confirm no password
@@ -49,3 +49,15 @@ def profile(request):
         return HttpResponse(page.render(context, request))
     else:
         return redirect('signup')
+
+def addPhoneNumber(request):
+        if request.method == 'POST':
+            form = PhoneNumberForm(request.POST)
+            if form.is_valid():
+                phone_number = form.cleaned_data.get('address')
+                user = request.user
+                PhoneNumber.objects.create(phone_number=phone_number, user=user)
+                return redirect('profile')
+        else:
+            form = PhoneNumberForm()
+        return render(request, "account/addPhoneNumber.html", {'form': form})
