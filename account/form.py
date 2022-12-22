@@ -32,6 +32,14 @@ class AddressForm(ModelForm):
 
 
 class PhoneNumberForm(ModelForm):
-	class Meta:
-		model = PhoneNumber
-		fields = ('phone_number', )
+    class Meta:
+        model = PhoneNumber
+        fields = ('phone_number',)
+
+    def __init__(self, user, *args, **kwargs):
+        super(PhoneNumberForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def save(self, commit=True):
+        self.instance.user = self.user
+        super(PhoneNumberForm, self).save(commit)

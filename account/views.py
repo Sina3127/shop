@@ -1,10 +1,7 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
-from django.views import generic
-from .models import Address, PhoneNumber
 
 from account.form import CustomUserCreationForm, AddressForm, PhoneNumberForm
 
@@ -39,7 +36,11 @@ def addLocation(request):  # locations, you may also like
     return render(request, "account/addLocation.html", {'form': form})
 
 
-def removeLocation(request):  # locations, you may also like
+def removeLocation(request, id):  # locations, you may also like
+    pass
+
+
+def removePhoneNumber(request, id):  # locations, you may also like
     pass
 
 
@@ -54,13 +55,11 @@ def profile(request):
 
 
 def addPhoneNumber(request):
-        if request.method == 'POST':
-            form = PhoneNumberForm(request.POST)
-            if form.is_valid():
-                phone_number = form.cleaned_data.get('phone_number')
-                user = request.user
-                PhoneNumber.objects.create(phone_number=phone_number, user=user)
-                return redirect('profile')
-        else:
-            form = PhoneNumberForm()
-        return render(request, "account/addPhoneNumber.html", {'form': form})
+    if request.method == 'POST':
+        form = PhoneNumberForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = PhoneNumberForm(request.user)
+    return render(request, "account/addPhoneNumber.html", {'form': form})

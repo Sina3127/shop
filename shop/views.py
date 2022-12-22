@@ -1,10 +1,10 @@
-from django.db import transaction
 from django.contrib import messages
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.views import generic
 from django.utils.translation import gettext as _
+from django.views import generic
 
 from shop.form import AddReview, AddTransaction
 from shop.models import Banner, Transaction, TransactionItem
@@ -174,7 +174,7 @@ def shipping(request):
                 send_time = form.cleaned_data.get("send_time")
                 user = request.user
                 cart = Cart.objects.get(user=request.user)
-                cart_items = CartItem.objects.filter(cart=cart).all()
+                cart_items = CartItem.objects.filter(cart=cart).all() # todo
                 Transaction.objects.create(user=user, state_payment=Transaction.STATE.NEW,
                                            )
                 for cart_item in cart_items:
