@@ -1,8 +1,10 @@
 from django.db import transaction
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.views import generic
+from django.utils.translation import gettext as _
 
 from shop.form import AddReview, AddTransaction
 from shop.models import Banner, Transaction, TransactionItem
@@ -54,17 +56,22 @@ def CartDetails(request):
 
 
 def addToCart(request):  # cart, you may also like,
-    print(request.POST)
     if request.user.is_authenticated:
         cart, created = Cart.objects.get_or_create(user=request.user)
-        product_id = request.POST.get('id')
-        id = int(product_id[0])
+        id = int(request.POST.get('id')[0])
+        product = get_object_or_404(Product, id=id)
         if CartItem.objects.filter(cart=cart, product=id).exists():
-            cart_item = CartItem.objects.filter(cart=cart, product=id).first()
+            cart_item = CartItem.objects.filter(cart=cart, product=product).first()
             cart_item.count += 1
             cart_item.save()
         else:
-            CartItem.objects.create(cart=cart, product_id=id, count=1)
+            CartItem.objects.create(cart=cart, product=product, count=1)
+
+        if CartItem.objects.get(cart=cart, product=id).count > product.inventory:
+            messages.add_message(request, messages.WARNING, _("sorry, we don't have enough product!"))
+            CartItem.objects.filter(cart=cart, product=id).update(count=product.inventory)
+        else:
+            messages.add_message(request, messages.INFO, _("new product added"))
         return redirect('cart')
     else:
         return redirect('signup')
