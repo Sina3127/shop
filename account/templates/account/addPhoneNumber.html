@@ -1,7 +1,7 @@
 {% extends 'shop/_base.html' %}
 {% load static %}
 
-{% block title %}Add Location{% endblock title %}
+{% block title %}Phone Number{% endblock title %}
 
 {% block head %}{% endblock head %}
 
@@ -10,7 +10,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">
-            enter address
+            enter phone number
         </button>
     </form>
 {% endblock content %}

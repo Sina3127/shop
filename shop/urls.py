@@ -15,4 +15,5 @@ urlpatterns = [
     path('orderStatus/', views.orderStatus),
     path('reviewings/<int:id>/', views.reviewings, name='reviewings'),
     path('searchbar/', views.searchbar, name='searchbar'),
+    path('shipping/', views.shipping, name='shipping'),
 ]

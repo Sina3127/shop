@@ -43,18 +43,11 @@ def itemDetails(request,
 def CartDetails(request):
     if request.user.is_authenticated:
         page = loader.get_template('shop/cart.html')
-        # cart = Cart.objects.filter(user=request.user).all()
         cart, created = Cart.objects.get_or_create(user=request.user)
-
-        t_amount = 0
-
-        for c in cart.cart_items.all():
-            amount = c.product.price * c.count
-            t_amount += amount
 
         context = {
             'cart': cart,
-            't_amount': t_amount
+            't_amount': cart.t_price()
         }
         return HttpResponse(page.render(context, request))
     else:
@@ -166,3 +159,18 @@ def reviewings(request, id):  # itemdetails
         'form': form,
     }
     return render(request, 'shop/reviewings.html', context)
+
+def shipping(request):
+    if request.user.is_authenticated:
+        page = loader.get_template('shop/shipping.html')
+        cart, created = Cart.objects.get_or_create(user=request.user)
+
+        context = {
+            'cart': cart,
+            't_amount': cart.t_price(),
+            'address': request.user.address.all(),
+            'send_time': ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",]
+        }
+        return render(request, 'shop/shipping.html', context)
+    else:
+        return redirect('signup')

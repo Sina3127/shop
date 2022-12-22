@@ -71,6 +71,14 @@ class Profile(models.Model):
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
+    def t_price(self):
+        t_amount = 0
+
+        for c in self.cart_items.all():
+            amount = c.product.price * c.count
+            t_amount += amount
+        return t_amount
+
     def __str__(self):
         return self.user.username
 
