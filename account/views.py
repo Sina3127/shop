@@ -54,7 +54,7 @@ def addPhoneNumber(request):
         if request.method == 'POST':
             form = PhoneNumberForm(request.POST)
             if form.is_valid():
-                phone_number = form.cleaned_data.get('address')
+                phone_number = form.cleaned_data.get('phone_number')
                 user = request.user
                 PhoneNumber.objects.create(phone_number=phone_number, user=user)
                 return redirect('profile')

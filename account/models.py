@@ -24,8 +24,8 @@ class Address(models.Model):
         return self.user.username + "  " + self.address
 
 class PhoneNumber(models.Model):
-    phone_number = models.IntegerField(null=True)
+    phone_number = models.IntegerField(max_length=12)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="phone_number")
 
     def __str__(self):
-        return self.user.username + "  " + self.phone_number
+        return self.user.username + "  " + str(self.phone_number)
