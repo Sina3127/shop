@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 
@@ -24,7 +25,7 @@ class Address(models.Model):
         return self.user.username + "  " + self.address
 
 class PhoneNumber(models.Model):
-    phone_number = models.IntegerField(max_length=12)
+    phone_number = models.IntegerField(unique=True, validators=[MaxValueValidator(999999999999)])
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="phone_number")
 
     def __str__(self):

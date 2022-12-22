@@ -31,8 +31,8 @@
                      {% for a in user.phone_number.all %}
                         <div class="col text-bg-secondary p-3 my-3 py-3"> {{ a.phone_number }} </div>
                      {% endfor %}
-                     <a href="{% url 'add_phone_number' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
-                     <a href="{% url 'add_phone_number' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
+                     <a href="{% url 'addPhoneNumber' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                     <a href="{% url 'addPhoneNumber' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
                  </div>
              </div>
          </div>
