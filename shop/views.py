@@ -1,15 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.views import generic
+
+from shop.form import AddReview
+from shop.models import Banner
+from shop.models import Product, Cart, Category, ReviewComment, CartItem
 
 
 # class Home(generic.TemplateView):
 #     template_name = 'shop/home.html'
-from django.views.decorators.cache import cache_page
-
-from shop.form import AddReview
-from shop.models import Product, Cart, Category, ReviewComment, Banner
 
 
 def Home(request):
@@ -21,17 +20,18 @@ def Home(request):
     else:
         recom = Product.objects.all()
     context = {
-        'products' : recom,
-        'categories':Category.objects.filter(parent__isnull=True).all(),
+        'products': recom,
+        'categories': Category.objects.filter(parent__isnull=True).all(),
         'banner': Banner.objects.filter(is_active=True).order_by('number').all(),
     }
     return HttpResponse(page.render(context, request))
 
 
-def itemDetails(request, id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
+def itemDetails(request,
+                id):  # price, title, list(pictures), copon, review, decription, remaining, you may also like, size,
     product = get_object_or_404(Product, id=id)
     context = {
-        'product' : product,
+        'product': product,
         'categories': Category.objects.filter(parent__isnull=True).all(),
     }
     return render(request, 'shop/itemDetails.html', context)
@@ -40,10 +40,11 @@ def itemDetails(request, id):  # price, title, list(pictures), copon, review, de
 def CartDetails(request):
     if request.user.is_authenticated:
         page = loader.get_template('shop/cart.html')
-        # cart = Cart.objects.filter(user=request.user).all()
         cart, created = Cart.objects.get_or_create(user=request.user)
+
         context = {
-            'cart': cart
+            'cart': cart,
+            't_amount': cart.t_price()
         }
         return HttpResponse(page.render(context, request))
     else:
@@ -56,14 +57,32 @@ def addToCart(request):  # cart, you may also like,
         cart, created = Cart.objects.get_or_create(user=request.user)
         product_id = request.POST.get('id')
         id = int(product_id[0])
-        cart.products.add(id)
+        if CartItem.objects.filter(cart=cart, product=id).exists():
+            cart_item = CartItem.objects.filter(cart=cart, product=id).first()
+            cart_item.count += 1
+            cart_item.save()
+        else:
+            CartItem.objects.create(cart=cart, product_id=id, count=1)
         return redirect('cart')
     else:
         return redirect('signup')
 
 
-def removeFromCart(request):  # cart, you may also like,
-    return HttpResponse("removeFromCart")
+def removeFromCart(request):
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        product_id = request.POST.get('id')
+        id = int(product_id[0])
+        if CartItem.objects.filter(cart=cart, product=id).exists():
+            cart_item = CartItem.objects.filter(cart=cart, product=id).first()
+            cart_item.count -= 1
+            if cart_item.count < 1:
+                CartItem.objects.filter(id=cart_item.id).delete()
+            else:
+                cart_item.save()
+        return redirect('cart')
+    else:
+        return redirect('signup')
 
 
 def orderSumary(request):  # previes card,
@@ -81,7 +100,8 @@ def items(request):  # special offers, itemDetails
     }
     return render(request, 'shop/items.html', context)
 
-def Categories(request,id):  # list of chategories
+
+def Categories(request, id):  # list of chategories
     category = get_object_or_404(Category, pk=id)
     childCategories = Category.objects.filter(parent=category).all()
     context = {
@@ -91,8 +111,7 @@ def Categories(request,id):  # list of chategories
     return render(request, 'shop/categories.html', context)
 
 
-
-def CategoriesDetials(request,id):
+def CategoriesDetials(request, id):
     category = get_object_or_404(Category, pk=id)
     product = Product.objects.filter(category=category).all()
     context = {
@@ -100,7 +119,6 @@ def CategoriesDetials(request,id):
         'products': product,
     }
     return render(request, 'shop/categories-details.html', context)
-
 
 
 def orderStatus(request):  # locations, arrival, itemdetails,
@@ -133,3 +151,18 @@ def reviewings(request, id):  # itemdetails
         'form': form,
     }
     return render(request, 'shop/reviewings.html', context)
+
+def shipping(request):
+    if request.user.is_authenticated:
+        page = loader.get_template('shop/shipping.html')
+        cart, created = Cart.objects.get_or_create(user=request.user)
+
+        context = {
+            'cart': cart,
+            't_amount': cart.t_price(),
+            'address': request.user.address.all(),
+            'send_time': ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",]
+        }
+        return render(request, 'shop/shipping.html', context)
+    else:
+        return redirect('signup')

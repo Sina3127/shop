@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import ForeignKey
 
-from account.models import CustomUser
+from account.models import CustomUser, Address
 from shop.validators import point_validator, validate_minimum_size
 
 
@@ -10,9 +10,11 @@ class Category(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     parent = models.ForeignKey("Category", on_delete=models.PROTECT, null=True, blank=True)
+
     # Product
     def __str__(self):
         return self.title
+
 
 class Product(models.Model):
     class Tag:
@@ -20,13 +22,9 @@ class Product(models.Model):
         SALE = 2
         OUT_OF_STOCK = 3
 
-    TagTypeChoose = (
-        (Tag.NEW, "new"),
-        (Tag.SALE, "sale"),
-        (Tag.OUT_OF_STOCK, "out of stock"),
-    )
+    TagTypeChoose = ((Tag.NEW, "new"), (Tag.SALE, "sale"), (Tag.OUT_OF_STOCK, "out of stock"),)
     tag = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
-    cover = models.ImageField(upload_to='uploads/', validators=[validate_minimum_size(400, 600),])
+    cover = models.ImageField(upload_to='uploads/', validators=[validate_minimum_size(400, 600), ])
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -35,15 +33,15 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
+
     def __str__(self):
-        return self.title
-    # carts
-    # review
+        return self.title  # carts  # review
 
 
 class ProductMedia(models.Model):
     product = ForeignKey(Product, on_delete=models.CASCADE)
     img = models.ImageField(upload_to='uploads/')
+
 
 class Banner(models.Model):
     image = models.ImageField(upload_to='uploads/')
@@ -61,7 +59,7 @@ class ReviewComment(models.Model):
     review = ForeignKey(Product, on_delete=models.CASCADE, related_name='review')
     text = models.TextField(max_length=255, blank=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    point = models.DecimalField(max_digits=5, decimal_places=2, validators=[point_validator,])
+    point = models.DecimalField(max_digits=5, decimal_places=2, validators=[point_validator, ])
     date = models.DateField(auto_now=True)
 
 
@@ -72,6 +70,48 @@ class Profile(models.Model):
 
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, related_name='carts')
+
+    def t_price(self):
+        t_amount = 0
+
+        for c in self.cart_items.all():
+            amount = c.product.price * c.count
+            t_amount += amount
+        return t_amount
+
     def __str__(self):
         return self.user.username
+
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+    count = models.IntegerField()
+
+
+class Transaction(models.Model):
+    class STATE:
+        NEW = 1
+        PENDING = 2
+        PAYMENT_APPROVED = 3
+        ADMIN_CHECKING = 4
+        ADMIN_FAILED = 5
+        PAYMENT_FAILED = 6
+
+    TagTypeChoose = ((STATE.NEW, "new"), (STATE.PENDING, "pending"), (STATE.PAYMENT_APPROVED, "payment approved"),
+                     (STATE.ADMIN_CHECKING, "admin checking"), (STATE.ADMIN_FAILED, "admin failed"),
+                     (STATE.PAYMENT_FAILED, "payment failed"),)
+    state_payment = models.IntegerField(choices=TagTypeChoose, null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    created = models.DateTimeField(auto_now_add=True)
+    send_time = models.DateField()
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    shipping_price = models.IntegerField()
+    total_price = models.IntegerField()
+
+
+class TransactionItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_item")
+    count = models.IntegerField()
+    price = models.IntegerField()

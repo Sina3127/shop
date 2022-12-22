@@ -1,18 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
- {% if user.is_authenticated %}
-    Hi {{ user.email }}!
-    {% for a in user.address.all %}
-        {{ a.address }}
-    {% endfor %}
-  {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a>
-  {% endif %} 
-</body>
-</html>
+{% extends 'shop/_base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock title %}
+
+
+{% block content %}
+
+ <div class="container-fluid pt-3">
+
+     <div class="row">
+
+         <div class="col-md-3 d-flex flex-column justify-content-center">
+             <img src="{{ user.avatar.image.url }}" class="rounded-circle float-start"/>
+             <div>{{ user.username }}</div>
+         </div>
+
+         <div class="col-md-9">
+             <div class="row">
+                 <div class="col">
+                     <div class="col my-3 py-3">addresses:</div>
+                     {% for a in user.address.all %}
+                        <div class="col text-bg-secondary p-3 my-3 py-3"> {{ a.address|truncatewords:8 }} </div>
+                     {% endfor %}
+                     <a href="{% url 'add_location' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                     <a href="{% url 'add_location' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
+                 </div>
+
+                 <div class="col">
+                     <div class="col my-3 py-3">phone numbers:</div>
+                     {% for a in user.phone_number.all %}
+                        <div class="col text-bg-secondary p-3 my-3 py-3"> {{ a.phone_number }} </div>
+                     {% endfor %}
+                     <a href="{% url 'addPhoneNumber' %}" class="col-1 btn btn-success align-middle text-center" type="submit">+</a>
+                     <a href="{% url 'addPhoneNumber' %}" class="col-1 btn btn-danger align-middle text-center" type="submit">-</a>
+                 </div>
+             </div>
+         </div>
+
+     </div>
+ </div>
+{% endblock content %}
