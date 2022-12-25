@@ -99,10 +99,6 @@ def orderSumary(request):  # previes card,
     return HttpResponse("orderSumary")
 
 
-def payment(request):  # cart, amount of money, all card numbers, all locations
-    return HttpResponse("payment")
-
-
 def items(request):  # special offers, itemDetails
     products = Product.objects.all()
     context = {
@@ -196,4 +192,20 @@ def shipping(request):
 
 
 class PaymentView(generic.TemplateView):
-    pass
+    template_name = 'shop/payment.html'
+
+    def get(self, request, *args, **kwargs):
+        t = Transaction.objects.filter(user=self.request.user).last()
+        t.state_payment = Transaction.STATE.PENDING
+        t.save()
+        return super(PaymentView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs = super(PaymentView, self).get_context_data(**kwargs)
+        t = Transaction.objects.filter(user=self.request.user).last()
+        kwargs["transaction"] = t
+        kwargs["transaction_item"] = TransactionItem.objects.filter(transaction=t).all()
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        return redirect('home')  # todo

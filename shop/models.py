@@ -94,12 +94,10 @@ class Transaction(models.Model):
         NEW = 1
         PENDING = 2
         PAYMENT_APPROVED = 3
-        ADMIN_CHECKING = 4
-        ADMIN_FAILED = 5
-        PAYMENT_FAILED = 6
+        PAYMENT_FAILED = 4
 
-    TagTypeChoose = ((STATE.NEW, "new"), (STATE.PENDING, "pending"), (STATE.PAYMENT_APPROVED, "payment approved"),
-                     (STATE.ADMIN_CHECKING, "admin checking"), (STATE.ADMIN_FAILED, "admin failed"),
+    TagTypeChoose = ((STATE.NEW, "new"), (STATE.PENDING, "pending"),
+                     (STATE.PAYMENT_APPROVED, "payment approved"),
                      (STATE.PAYMENT_FAILED, "payment failed"),)
     state_payment = models.IntegerField(choices=TagTypeChoose)
     user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
