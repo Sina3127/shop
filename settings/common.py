@@ -137,3 +137,5 @@ LANGUAGE_CODE = 'en'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'local'),
 )
+
+SHIPPING_PRICE = 7

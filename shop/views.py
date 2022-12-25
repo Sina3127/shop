@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponse
@@ -169,16 +170,24 @@ def shipping(request):
     if request.method == 'POST':
         form = AddTransaction(request.user, request.POST, request.FILES)
         if form.is_valid():
+            address = form.cleaned_data.get('address')
+            send_time = form.cleaned_data.get("send_time")
+            user = request.user
+            cart = Cart.objects.get(user=request.user)
+            cart_items = CartItem.objects.filter(cart=cart).all()
             with transaction.atomic():
-                address = form.cleaned_data.get('address')
-                send_time = form.cleaned_data.get("send_time")
-                user = request.user
-                cart = Cart.objects.get(user=request.user)
-                cart_items = CartItem.objects.filter(cart=cart).all() # todo
-                Transaction.objects.create(user=user, state_payment=Transaction.STATE.NEW,
-                                           )
+                t = Transaction.objects.create(user=user, state_payment=Transaction.STATE.NEW,
+                                               send_time=send_time, address=address,
+                                               shipping_price=settings.SHIPPING_PRICE,
+                                               total_price=cart.t_price()
+                                               )
                 for cart_item in cart_items:
-                    TransactionItem.objects.create()
+                    TransactionItem.objects.create(
+                        product=cart_item.product,
+                        transaction=t,
+                        count=cart_item.count,
+                        price=cart_item.product.price,
+                    )
 
             return redirect('payment')
     else:

@@ -114,4 +114,4 @@ class TransactionItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_item")
     count = models.IntegerField()
-    price = models.IntegerField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
