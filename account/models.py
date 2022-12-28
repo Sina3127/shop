@@ -22,7 +22,7 @@ class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="address")
 
     def __str__(self):
-        return self.user.username + "  " + self.address
+        return self.address
 
 class PhoneNumber(models.Model):
     phone_number = models.IntegerField(unique=True, validators=[MaxValueValidator(999999999999)])
