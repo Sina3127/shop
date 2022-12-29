@@ -202,17 +202,36 @@ class PaymentView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs = super(PaymentView, self).get_context_data(**kwargs)
-        t = Transaction.objects.filter(user=self.request.user).last()
-        transaction_item = TransactionItem.objects.filter(transaction=t).all()
+        transaction = Transaction.objects.filter(user=self.request.user).last()
+        transaction_item = TransactionItem.objects.filter(transaction=transaction).all()
         products = Product.objects.filter(id__in=[i.product_id for i in transaction_item]).all()
-        kwargs["transaction"] = t
+        kwargs["transaction"] = transaction
         kwargs["transaction_item"] = transaction_item
         kwargs["products"] = products
         return kwargs
 
     def post(self, request, *args, **kwargs):
+        payment_status = request.POST.get('payment', 'failed')
         CartItem.objects.filter(cart=self.request.user.cart).delete()
         t = Transaction.objects.filter(user=self.request.user).last()
-        t.state_payment = Transaction.STATE.PAYMENT_APPROVED
-        t.save()
+        if payment_status == "approve":
+            transaction_item = TransactionItem.objects.filter(transaction=t).all()
+            try:
+                with transaction.atomic():
+                    for t in transaction_item:
+                        t.product.inventory = t.product.inventory - t.count
+                        if t.product.inventory < 0:
+                            raise "not exist in shop!"
+                        t.product.save()
+                messages.add_message(request, messages.SUCCESS, "your payment accept.")
+                t.state_payment = Transaction.STATE.PAYMENT_APPROVED
+                t.save()
+            except:
+                messages.add_message(request, messages.INFO, "not exist in shop.")
+                t.state_payment = Transaction.STATE.NOT_EXISTS
+                t.save()
+        else:
+            messages.add_message(request, messages.WARNING, "your payment reject!")
+            t.state_payment = Transaction.STATE.PAYMENT_FAILED
+            t.save()
         return redirect('home')

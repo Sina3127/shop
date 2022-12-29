@@ -16,13 +16,13 @@
     <form method="post" action="{% url 'payment' %}">
         {% csrf_token %}
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="approve" value="approve">
+            <input class="form-check-input" type="radio" name="payment" id="approve" value="approve">
             <label class="form-check-label">
                 payment approve
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="failed" value="failed" checked>
+            <input class="form-check-input" type="radio" name="payment" id="failed" value="failed" checked>
             <label class="form-check-label">
                 payment failed
             </label>

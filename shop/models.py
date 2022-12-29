@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import ForeignKey
 
@@ -96,12 +95,15 @@ class Transaction(models.Model):
         PENDING = 2
         PAYMENT_APPROVED = 3
         PAYMENT_FAILED = 4
+        NOT_EXISTS = 5
 
     TagTypeChoose = ((STATE.NEW, "new"), (STATE.PENDING, "pending"),
                      (STATE.PAYMENT_APPROVED, "payment approved"),
-                     (STATE.PAYMENT_FAILED, "payment failed"),)
+                     (STATE.PAYMENT_FAILED, "payment failed"),
+                     (STATE.NOT_EXISTS, "not exist in store")
+                     )
     state_payment = models.IntegerField(choices=TagTypeChoose)
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, related_name="transaction")
     created = models.DateTimeField(auto_now_add=True)
     send_time = models.DateField()
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -110,7 +112,7 @@ class Transaction(models.Model):
 
 
 class TransactionItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="transaction_item")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_item")
     count = models.IntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
