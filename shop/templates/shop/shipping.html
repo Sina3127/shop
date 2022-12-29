@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>shipping</title>
-</head>
-<body>
+{% extends 'shop/_base.html' %}
+{% load static %}
+
+{% block title %}Shipping{% endblock title %}
+{% block head %}
+{% endblock head %}
+
+{% block content %}
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -12,5 +13,4 @@
             enter address
         </button>
     </form>
-</body>
-</html>
+{% endblock content %}

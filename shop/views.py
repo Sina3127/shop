@@ -203,9 +203,16 @@ class PaymentView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         kwargs = super(PaymentView, self).get_context_data(**kwargs)
         t = Transaction.objects.filter(user=self.request.user).last()
+        transaction_item = TransactionItem.objects.filter(transaction=t).all()
+        products = Product.objects.filter(id__in=[i.product_id for i in transaction_item]).all()
         kwargs["transaction"] = t
-        kwargs["transaction_item"] = TransactionItem.objects.filter(transaction=t).all()
+        kwargs["transaction_item"] = transaction_item
+        kwargs["products"] = products
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        return redirect('home')  # todo
+        CartItem.objects.filter(cart=self.request.user.cart).delete()
+        t = Transaction.objects.filter(user=self.request.user).last()
+        t.state_payment = Transaction.STATE.PAYMENT_APPROVED
+        t.save()
+        return redirect('home')

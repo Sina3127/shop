@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from unicodedata import category
 
-from shop.models import Product, Category, ReviewComment, Cart, Banner
+from shop.models import Product, Category, ReviewComment, Cart, Banner, Transaction, TransactionItem
 
 
 @admin.register(Category)
@@ -25,3 +25,5 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(ReviewComment)
 admin.site.register(Cart)
 admin.site.register(Banner)
+admin.site.register(Transaction)
+admin.site.register(TransactionItem)

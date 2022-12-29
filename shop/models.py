@@ -69,7 +69,7 @@ class Profile(models.Model):
 
 
 class Cart(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="cart")
 
     def t_price(self):
         t_amount = 0
@@ -81,10 +81,11 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.user.username
+    # cart_items
 
 
 class CartItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="cart_items")
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
     count = models.IntegerField()
 
@@ -109,7 +110,7 @@ class Transaction(models.Model):
 
 
 class TransactionItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="transaction_item")
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_item")
     count = models.IntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
