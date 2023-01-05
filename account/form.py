@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django.forms import ModelForm
 
 from account.models import Address, PhoneNumber
@@ -43,3 +43,7 @@ class PhoneNumberForm(ModelForm):
     def save(self, commit=True):
         self.instance.user = self.user
         super(PhoneNumberForm, self).save(commit)
+
+
+class LogInForm(AuthenticationForm):
+    pass

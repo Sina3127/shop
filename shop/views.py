@@ -46,10 +46,22 @@ def CartDetails(request):
     if request.user.is_authenticated:
         page = loader.get_template('shop/cart.html')
         cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_items = cart.cart_items.all()
+        for item in cart_items:
+            if item.count > item.product.inventory:
+                if item.product.inventory == 0:
+                    messages.add_message(request, messages.WARNING,
+                                         f"sorry, {item.product.title} is getting low on stock.")
+                    CartItem.objects.filter(id=item.id).delete()
+                else:
+                    messages.add_message(request, messages.WARNING,
+                                         f"sorry, {item.product.title} is no longer available.")
+                    item.count = item.product.inventory
+                    item.save()
 
         context = {
             'cart': cart,
-            't_amount': cart.t_price()
+            't_amount': cart.t_price(),
         }
         return HttpResponse(page.render(context, request))
     else:
@@ -221,7 +233,7 @@ class PaymentView(generic.TemplateView):
                     for t in transaction_item:
                         t.product.inventory = t.product.inventory - t.count
                         if t.product.inventory < 0:
-                            raise "not exist in shop!"
+                            raise Exception("not exist in shop!")
                         t.product.save()
                 messages.add_message(request, messages.SUCCESS, "your payment accept.")
                 t.state_payment = Transaction.STATE.PAYMENT_APPROVED

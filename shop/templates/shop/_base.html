@@ -79,10 +79,11 @@
                 <a href="{% url 'profile' %}" class="btn btn-dark btn-block btn-lg">
                     <img src="{{ user.avatar.image.url }}" class="rounded-circle float-start img-responsive" height="50"/>
                 </a>
+                <a href="{% url 'logout' %}" type="button" class="btn btn-danger">Logout</a>
             {% else %}
                 <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">Login</button>
-                    <button type="button" class="btn btn-warning">Sign-up</button>
+                    <a href="{% url 'login' %}" type="button" class="btn btn-outline-light me-2">Login</a>
+                    <a href="{% url 'signup' %}" type="button" class="btn btn-warning">Sign-up</a>
                 </div>
             {% endif %}
         </div>

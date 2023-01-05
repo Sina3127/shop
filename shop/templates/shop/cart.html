@@ -73,12 +73,16 @@
 
                 {% endfor %}
 
-                <div class="card">
-                    <div class="card-body">
-                        <a href="{% url 'shipping' %}" class="btn btn-warning btn-block btn-lg" type="submit">Proceed to Pay</a>
-                        <p class="mt-3">total price: {{ t_amount }}</p>
+                {% if not cart.cart_items.exists %}
+                    <p>cart empty :(</p>
+                {% else %}
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{% url 'shipping' %}" class="btn btn-warning btn-block btn-lg" type="submit">Proceed to Pay</a>
+                            <p class="mt-3">total price: {{ t_amount }}</p>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
             </div>
         </div>

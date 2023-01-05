@@ -1,9 +1,11 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
+from django.urls import reverse_lazy
+from django.views import generic
 
-from account.form import CustomUserCreationForm, AddressForm, PhoneNumberForm
+from account.form import CustomUserCreationForm, AddressForm, PhoneNumberForm, LogInForm
 
 
 def changePassword(request):  # password, you may also like, new password, confirm no password
@@ -63,3 +65,22 @@ def addPhoneNumber(request):
     else:
         form = PhoneNumberForm(request.user)
     return render(request, "account/addPhoneNumber.html", {'form': form})
+
+
+class LogOut(generic.View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('home')
+
+
+class LogIn(generic.FormView):
+    form_class = LogInForm
+    template_name = 'account/logIn.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        login(self.request, user)
+        return super(LogIn, self).form_valid(form)

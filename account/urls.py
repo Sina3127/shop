@@ -10,5 +10,7 @@ urlpatterns = [
     path('addPhoneNumber/', views.addPhoneNumber, name='addPhoneNumber'),
     path('removeLocation/<int:id>/', views.removeLocation, ),
     path('removePhoneNumber/<int:id>/', views.removePhoneNumber, ),
+    path('logout/', views.LogOut.as_view(), name='logout'),
+    path('login/', views.LogIn.as_view(), name='login'),
     path('', include('django.contrib.auth.urls')),
 ]
