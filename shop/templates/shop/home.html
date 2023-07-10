@@ -7,7 +7,7 @@
 {% endblock head %}
 
 {% block content %}
-    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+    <div id="carouselExampleCaptions" class="carousel slide mw-100" data-bs-ride="carousel">
         <div class="carousel-indicators">
             {% for i in banner %}
                 {% if forloop.first %}
@@ -43,5 +43,7 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    {% include "shop/cards.html" %}
+<div class="container w-50 d-flex align-items-center justify-content-center">
+        {% include "shop/cards.html" %}
+</div>
 {% endblock content %}

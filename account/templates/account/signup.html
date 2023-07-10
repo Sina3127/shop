@@ -1,16 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>signup</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">
-            Signup
-        </button>
-    </form>
-</body>
-</html>
+{% extends 'account/_base.html' %}
+{% load static %}
+
+{% block title %}Add Location{% endblock title %}
+
+{% block head %}{% endblock head %}
+
+{% block content %}
+    <container class="bg-secondary w-50 h-75 d-flex align-items-center justify-content-center rounded-3">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="submit">Login</button>
+            </div>
+        </form>
+    </container>
+{% endblock content %}

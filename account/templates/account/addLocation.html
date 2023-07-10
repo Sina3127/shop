@@ -1,4 +1,4 @@
-{% extends 'shop/_base.html' %}
+{% extends 'account/_base.html' %}
 {% load static %}
 
 {% block title %}Add Location{% endblock title %}
@@ -6,11 +6,13 @@
 {% block head %}{% endblock head %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">
-            enter address
-        </button>
-    </form>
+<container class="bg-secondary w-50 h-75 d-flex align-items-center justify-content-center rounded-3">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="submit">enter Address</button>
+            </div>
+        </form>
+    </container>
 {% endblock content %}

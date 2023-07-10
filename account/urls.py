@@ -1,8 +1,10 @@
 from django.urls import path, include
 
 from . import views
+from .views import LogInView
 
 urlpatterns = [
+    path('login/', LogInView.as_view(), name='login'),
     path('profile/', views.profile, name='profile'),
     path('signup/', views.signup, name='signup'),
     path('changePassword/', views.changePassword),
@@ -11,6 +13,4 @@ urlpatterns = [
     path('removeLocation/<int:id>/', views.removeLocation, ),
     path('removePhoneNumber/<int:id>/', views.removePhoneNumber, ),
     path('logout/', views.LogOut.as_view(), name='logout'),
-    path('login/', views.LogIn.as_view(), name='login'),
-    path('', include('django.contrib.auth.urls')),
 ]
